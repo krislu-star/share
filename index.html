@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PM 連接器設定步驟</title>
+<style>
+  /* ===== STARCO CIS（取樣自 logo）===== */
+  :root{
+    --navy:#142356;--gold:#FFBF00;--navy-2:#21478C;--navy-soft:#eef0f7;
+    --bg:#f6f7fa;--card:#fff;--ink:#1b2233;--soft:#5b6678;--line:#e6e8ef;--ok:#2f9e44;--warn:#e8590c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;zoom:1.35;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 18px 90px}
+  .hero{background:var(--navy);color:#fff;border-radius:0 0 20px 20px;padding:30px 28px 24px;text-align:center;margin:0 -2px 8px}
+  .hero .ic{font-size:36px}
+  .hero h1{font-size:27px;font-weight:900;letter-spacing:.5px;margin:8px 0 4px}
+  .hero h1 b{color:var(--gold)}
+  .hero .sub{color:#b9c4dd;font-size:14.5px;margin:0}
+  .hero .bar{width:54px;height:5px;background:var(--gold);border-radius:99px;margin:14px auto 0}
+  .flow{display:flex;gap:7px;justify-content:center;margin:16px 0 0;flex-wrap:wrap;font-size:13px}
+  .flow .now{background:var(--gold);color:var(--navy);padding:3px 12px;border-radius:99px;font-weight:800}
+  .flow span.step{background:#2a3a6b;color:#cdd6ea;padding:3px 12px;border-radius:99px}
+  .intro{background:var(--navy-soft);border:1px solid #d4dcec;border-left:5px solid var(--gold);border-radius:12px;padding:16px 18px;margin:22px 0 8px;font-size:15px}
+  .intro b{color:var(--navy)}
+  .editnote{background:#fff6da;color:#7a5b00;border:1px solid #ffe49b;border-radius:10px;padding:10px 14px;font-size:13.5px;margin:12px 0}
+  .hl{background:#fff0b8;color:#7a5b00;padding:1px 7px;border-radius:5px;font-weight:700}
+  .yes{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:18px 0}
+  .yes h4{margin:0 0 10px;font-size:16px;color:var(--navy);font-weight:900}
+  .yes ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+  .yes li{font-size:15px;font-weight:700;background:var(--navy-soft);border:1px solid #d4dcec;border-radius:99px;padding:5px 13px}
+  /* 大號淡化數字標題 */
+  .seclbl{position:relative;margin:30px 0 6px;font-size:18px;font-weight:900;color:var(--navy)}
+  .seclbl:after{content:"";display:block;width:40px;height:4px;background:var(--gold);border-radius:99px;margin-top:7px}
+  /* 手把手步驟 */
+  .walk{background:var(--navy);color:#fff;border-radius:16px;padding:8px 8px 14px;margin:10px 0 4px}
+  .walk h3{margin:12px 14px 4px;font-size:17px;color:var(--gold)}
+  .stp{display:flex;gap:13px;padding:12px 14px;border-bottom:1px solid #243567}
+  .walk .stp:last-child{border-bottom:none}
+  .stp .n{flex:0 0 auto;width:30px;height:30px;border-radius:99px;background:var(--gold);color:var(--navy);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .stp .t{font-size:15px;color:#e6ebf6}
+  .stp .t b{color:#fff}
+  .stp .t .see{display:block;font-size:13px;color:#9fb0d4;margin-top:3px}
+  .pill{background:#2a3a6b;color:#fff;padding:1px 9px;border-radius:6px;font-size:13.5px;font-weight:700;white-space:nowrap}
+  .pit{background:#fff;border:1px solid #ffd8a8;border-left:5px solid var(--warn);border-radius:12px;padding:14px 18px;margin:18px 0;font-size:14px}
+  .pit h4{margin:0 0 8px;color:var(--warn);font-size:15px;font-weight:900}
+  .pit ul{margin:0;padding-left:20px}
+  .pit li{margin:6px 0}
+  .progress{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px;margin:8px 0}
+  .bar{height:11px;background:#e3e7f0;border-radius:99px;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s;border-radius:99px}
+  .ptext{font-size:14px;color:var(--soft);text-align:center;margin:6px 0 0;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px 13px;margin:12px 0;box-shadow:0 1px 3px rgba(20,35,86,.05)}
+  .card.done{border-color:#b7e0c0;background:#f6fcf7}
+  .chead{display:flex;align-items:center;gap:10px}
+  .emoji{font-size:22px}
+  .cname{font-size:18px;font-weight:900;margin:0;color:var(--navy)}
+  .tag{font-size:11.5px;font-weight:800;padding:2px 10px;border-radius:99px;margin-left:auto;background:var(--navy);color:#fff}
+  .find{font-size:14.5px;margin:10px 0 0}
+  .find .search{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:5px;padding:2px 9px;font-weight:800;color:var(--navy)}
+  .note{font-size:13.5px;color:var(--soft);margin:7px 0 0}
+  .check{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 14px;background:var(--navy-soft);border:1px solid #d4dcec;border-radius:10px;cursor:pointer}
+  .check input{width:21px;height:21px;flex:0 0 auto;cursor:pointer}
+  .check label{cursor:pointer;font-size:15px;font-weight:800;color:var(--navy)}
+  .nohave{font-size:13px;color:var(--warn);margin:9px 0 0}
+  .done-banner{display:none;background:var(--ok);color:#fff;border-radius:12px;padding:15px;text-align:center;font-weight:800;font-size:15px;margin:14px 0}
+  .done-banner.show{display:block}
+  .reset{display:block;margin:20px auto 0;background:none;border:1px solid var(--line);color:var(--soft);padding:7px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  footer{margin-top:26px;background:var(--navy);color:#fff;border-radius:16px;padding:20px;text-align:center}
+  footer h3{margin:0 0 8px;font-size:18px;color:var(--gold)}
+  footer p{margin:6px 0;font-size:14.5px;color:#c7d2e6}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="ic">🔌</div>
+    <h1>PM <b>連接器設定</b>步驟</h1>
+    <p class="sub">把 Claude「連到」你的工作系統，skill 才能用你的身分讀寫資料</p>
+    <div class="bar"></div>
+    <div class="flow">
+      <span class="step">① 確認帳號 ✓</span>
+      <span class="now">② 設定連接器（這份）</span>
+      <span class="step">③ 裝 skill</span>
+    </div>
+  </div>
+  <div class="wrap">
+
+    <div class="intro">
+      上一份你已確認「<b>帳號都有</b>」。這份是把 Claude <b>連到那些系統</b> —— 等於把鑰匙插上去，Claude 才能替你開門做事。<b>一次性設定，做完就不用再弄。</b>共 4 個，照下面一步一步做。
+    </div>
+
+    <div class="yes">
+      <h4>✅ 你要設定這 4 個</h4>
+      <ul>
+        <li>📒 Notion</li><li>💬 Slack</li><li>📅 Google Calendar</li><li>📁 Google Drive</li>
+      </ul>
+    </div>
+
+    <div class="editnote">✏️ <b>給 Kris：</b><span class="hl">黃底</span>處填公司實際資訊（工作區名稱、管理員、Jill 聯絡方式）。</div>
+
+    <!-- ===== 手把手主流程 ===== -->
+    <div class="seclbl">一、先學會「設定一個連接器」（每個都一樣，學會一次就會四個）</div>
+    <div class="walk">
+      <h3>🧭 跟著點，總共 7 下</h3>
+      <div class="stp"><span class="n">1</span><div class="t">打開 Claude 桌面 App，看<b>左上角</b>，點 <span class="pill">Customize</span><span class="see">就是有你頭像/名字那一區附近的設定入口。找不到的話：點左下你的名字 → <span class="pill">Settings 設定</span> 也行。</span></div></div>
+      <div class="stp"><span class="n">2</span><div class="t">在左邊清單點 <span class="pill">Connectors 連接器</span><span class="see">會看到一個「已連接的連接器」列表，第一次大多是空的。</span></div></div>
+      <div class="stp"><span class="n">3</span><div class="t">點右上角的 <span class="pill">＋ Add 新增</span><span class="see">有些版本是中間一顆大大的「＋」。</span></div></div>
+      <div class="stp"><span class="n">4</span><div class="t">點 <span class="pill">Browse connectors 瀏覽連接器</span><span class="see">會跳出一個可以搜尋的清單，裡面一堆 app 圖示。</span></div></div>
+      <div class="stp"><span class="n">5</span><div class="t">上面搜尋框<b>打名字</b>（例：<b>Notion</b>），點搜到的那個<span class="see">認圖示：📒Notion、💬Slack、📅Google Calendar、📁Google Drive。</span></div></div>
+      <div class="stp"><span class="n">6</span><div class="t">點 <span class="pill">Connect 連接</span> → 跳出登入頁 → <b>用公司帳號登入</b> → 按 <span class="pill">Allow 允許／同意</span><span class="see">它會列一串權限，整包按同意，不然連不起來。</span></div></div>
+      <div class="stp"><span class="n">7</span><div class="t">回到列表，看到那個 app 顯示 <b>「Connected 已連接」</b> = 這一個就完成 ✅<span class="see">接著回這頁，把對應的那張卡打勾。</span></div></div>
+    </div>
+
+    <div class="pit">
+      <h4>⚠️ 三個最常卡住的地方（先看，省得重來）</h4>
+      <ul>
+        <li><b>一定用公司帳號</b> —— 不要用個人 Gmail、個人 Notion。問你選哪個帳號時，選 <span class="hl">@公司網域</span> 那個。</li>
+        <li><b>授權頁要整包按「同意 / Allow」</b> —— 它會列一長串權限，這是正常的，沒同意就連不起來。</li>
+        <li><b>問你選哪個 workspace / 工作區 → 選「公司那個」</b>，別選到個人或其他公司的。</li>
+      </ul>
+    </div>
+
+    <!-- ===== 進度 ===== -->
+    <div class="seclbl">二、四個連接器，逐一完成打勾</div>
+    <div class="progress">
+      <div class="bar"><i id="barfill"></i></div>
+      <p class="ptext"><span id="pcount">0</span> / <span id="ptotal">4</span> 完成</p>
+    </div>
+    <div class="done-banner" id="banner">🎉 4 個連接器都「已連接」了！回報主管 <span class="hl">Jill</span>，接著裝 skill ＋ 一起測第一筆。</div>
+
+    <!-- Notion -->
+    <div class="card" data-card>
+      <div class="chead"><span class="emoji">📒</span><p class="cname">Notion</p><span class="tag">必裝</span></div>
+      <p class="find">第 5 步搜尋框打 <span class="search">Notion</span>，照 1～7 步做完。</p>
+      <p class="note">第 6 步若問選工作區，選 <span class="hl">【公司 Notion 工作區名稱】</span>。</p>
+      <div class="check"><input type="checkbox"><label>Notion 顯示「已連接」</label></div>
+      <p class="nohave">⚠️ 裝不起來 → 找 <span class="hl">【Notion 管理員】</span>。</p>
+    </div>
+
+    <!-- Slack -->
+    <div class="card" data-card>
+      <div class="chead"><span class="emoji">💬</span><p class="cname">Slack</p><span class="tag">必裝</span></div>
+      <p class="find">搜尋框打 <span class="search">Slack</span>，照 1～7 步做完。</p>
+      <p class="note">第 6 步會問選工作區 → 選 <span class="hl">【Slack 工作區名稱】</span>。</p>
+      <div class="check"><input type="checkbox"><label>Slack 顯示「已連接」</label></div>
+      <p class="nohave">⚠️ 裝不起來 → 找 <span class="hl">【Slack 管理員】</span>。</p>
+    </div>
+
+    <!-- Google Calendar -->
+    <div class="card" data-card>
+      <div class="chead"><span class="emoji">📅</span><p class="cname">Google Calendar</p><span class="tag">必裝</span></div>
+      <p class="find">搜尋框打 <span class="search">Google Calendar</span>，照 1～7 步做完。</p>
+      <p class="note">第 6 步登入用 <b>公司 Google 帳號</b>（<span class="hl">@公司網域</span>），別用個人 Gmail。</p>
+      <div class="check"><input type="checkbox"><label>Google Calendar 顯示「已連接」</label></div>
+      <p class="nohave">⚠️ 裝不起來 → 找 <span class="hl">【IT 聯絡人】</span>。</p>
+    </div>
+
+    <!-- Google Drive -->
+    <div class="card" data-card>
+      <div class="chead"><span class="emoji">📁</span><p class="cname">Google Drive</p><span class="tag">必裝</span></div>
+      <p class="find">搜尋框打 <span class="search">Google Drive</span>，照 1～7 步做完。</p>
+      <p class="note">同樣用 <b>公司 Google 帳號</b>。<b>注意：</b>Drive 和上面的 Calendar 是<b>分開的兩個</b>連接器，要各做一次。</p>
+      <div class="check"><input type="checkbox"><label>Google Drive 顯示「已連接」</label></div>
+      <p class="nohave">⚠️ 裝不起來 → 找 <span class="hl">【IT 聯絡人】</span>。</p>
+    </div>
+
+    <button class="reset" onclick="reset()">清除全部勾選</button>
+
+    <footer>
+      <h3>🔌 這 4 個都「已連接」了嗎？</h3>
+      <p>回報主管 <span class="hl">Jill</span>（<span class="hl">【Jill 聯絡方式】</span>）。</p>
+      <p>接著到 <b>安裝頁</b>把要用的 skill 裝起來，跑第一筆確認沒問題。</p>
+      <p style="margin-top:12px;font-size:13px;color:#8aa0c4">看到「已連接」就對了，細節不用懂。卡住就照每張卡最下面找人。</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const boxes=[...document.querySelectorAll('.card input[type=checkbox]')];
+    const KEY='pm-connectors-install-v2';
+    document.getElementById('ptotal').textContent=boxes.length;
+    function save(){localStorage.setItem(KEY,JSON.stringify(boxes.map(b=>b.checked)))}
+    function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(s))s.forEach((v,i)=>{if(boxes[i])boxes[i].checked=v})}catch(e){}}
+    function refresh(){let n=0;boxes.forEach(b=>{const c=b.closest('.card');if(b.checked){n++;c.classList.add('done')}else{c.classList.remove('done')}});document.getElementById('pcount').textContent=n;document.getElementById('barfill').style.width=(n/boxes.length*100)+'%';document.getElementById('banner').classList.toggle('show',n===boxes.length)}
+    boxes.forEach(b=>b.addEventListener('change',()=>{save();refresh()}));
+    document.querySelectorAll('.check').forEach(c=>c.addEventListener('click',e=>{if(e.target.tagName!=='INPUT'){const b=c.querySelector('input');b.checked=!b.checked;b.dispatchEvent(new Event('change'))}}));
+    function reset(){boxes.forEach(b=>b.checked=false);save();refresh()}
+    load();refresh();
+  </script>
+</body>
+</html>
