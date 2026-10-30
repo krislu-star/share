@@ -158,6 +158,51 @@
   .vfail a.big:hover{background:#22315C;}
   #vslot iframe{flex:1;width:100%;border:0;}
 </style>
+<style id="portal-responsive-style">
+/* Responsive portal and full-height report viewer. */
+*,*::before,*::after { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+header>div,.intro>div,.panel-head,.rrow,.card-foot { min-width:0; }
+.rt { min-width:0; }
+.card-top .t,.desc,.lead,footer { overflow-wrap:anywhere; }
+.chip,#vbar button,#vbar a { min-height:44px; }
+.chip:focus-visible,.card:focus-visible,.rrow:focus-visible,#vbar button:focus-visible,#vbar a:focus-visible { outline:3px solid #C29A4B; outline-offset:3px; }
+#q { min-height:44px; font-size:16px; }
+#viewer { height:100vh; height:100dvh; padding-bottom:env(safe-area-inset-bottom); }
+#vbar { padding-top:max(11px,env(safe-area-inset-top)); }
+#vtitle { min-width:0; overflow-wrap:anywhere; }
+#vslot { min-width:0; overflow:auto; }
+#vslot iframe { min-width:0; min-height:0; display:block; }
+#verr { white-space:normal; }
+body.report-open { overflow:hidden; }
+@media(max-width:680px) {
+  header { display:grid; grid-template-columns:36px minmax(0,1fr); padding:14px 16px; gap:10px; }
+  header .spacer { display:none; }
+  header .period { grid-column:2; display:flex; gap:8px; font-size:12px; }
+  .h-title { line-height:1.35; }
+  main { padding:18px 12px 36px; }
+  .panel { padding:14px 12px; }
+  .panel-head { flex-wrap:wrap; }
+  .rrow { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:6px 8px; padding:12px 0!important; }
+  .rrow .rt { white-space:normal; overflow:visible; grid-column:2/-1; line-height:1.5; }
+  .rrow .dot6 { display:none; }
+  .rrow .rc { grid-column:2; }
+  .rrow .point-hand { display:none; }
+  .rrow .rd { grid-column:2/-1; width:auto; margin-left:0; font-size:11px; }
+  .rrow .newest { grid-column:3; grid-row:2; }
+  .chips { gap:7px; }
+  .chip { padding:8px 12px; }
+  .sec-head { flex-wrap:wrap; gap:7px; }
+  .sec-head .rule { min-width:12px; }
+  .card-foot { align-items:flex-start; }
+  .card-foot .open { flex-shrink:0; }
+  #vbar { flex-wrap:wrap; gap:8px; padding:10px 12px; padding-top:max(10px,env(safe-area-inset-top)); }
+  #vtitle { flex-basis:100%; order:3; width:100%; font-size:14px; line-height:1.4; }
+  #verr,#vhint { flex-basis:100%; order:4; }
+  #vbar button,#vbar a { padding:8px 12px; }
+  .vfail { padding:24px 16px; }
+}
+</style>
 </head>
 <body>
 <header>
@@ -190,7 +235,7 @@
   </div>
   <footer>這是「單一檔案版」：所有報表都已內嵌在本檔內，不需要解壓縮資料夾、不需要伺服器也不需要網路，雙擊即可閱讀。<br>產生於 2026/10/30，「最近更新」以產生當日為基準。</footer>
 </main>
-<div id="viewer" hidden><div id="vbar"><button type="button" id="vback">← 返回總覽</button><span id="vtitle"></span><span id="verr" hidden></span><span id="vhint" hidden>若下方沒顯示，請按右邊「另存 PDF」</span><span class="vspacer"></span><button type="button" id="vreload" hidden>重新載入</button><a id="vdl" hidden download>另存 PDF</a></div><div id="vslot"></div></div><script type="text/plain" id="doc0" data-title="集團與各區營業日報摘要"><!DOCTYPE html>
+<div id="viewer" role="dialog" aria-modal="true" aria-labelledby="vtitle" hidden><div id="vbar"><button type="button" id="vback">← 返回總覽</button><span id="vtitle"></span><span id="verr" hidden></span><span id="vhint" hidden>若下方沒顯示，請按右邊「另存 PDF」</span><span class="vspacer"></span><button type="button" id="vreload" hidden>重新載入</button><a id="vdl" hidden download>另存 PDF</a></div><div id="vslot"></div></div><script type="text/plain" id="doc0" data-title="集團與各區營業日報摘要"><!DOCTYPE html>
 <html lang="zh-TW">
 <head><script>window.__RPT_ERR=[];window.addEventListener("error",function(e){try{window.__RPT_ERR.push(String((e&&(e.message||e.error))||"error"))}catch(_){}},true);>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -6671,6 +6716,106 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
 </html>
 </script>
 <script>
+/* Shared layout enhancement; report source data stays embedded and unchanged. */
+(function () {
+  'use strict';
+  var css = "/* Report layouts: preserve figures and give wide tables their own scroll area. */\n@media screen {\n  html { -webkit-text-size-adjust:100%; }\n  .rwd-table-scroll { width:100%; max-width:100%; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; }\n  .rwd-table-scroll:focus-visible { outline:2px solid #C29A4B; outline-offset:2px; }\n  .rwd-scroll-note { display:none; font:12px/1.5 system-ui,sans-serif; color:#857C6F; margin:6px 0; }\n  .rwd-scroll-note.is-wide { display:block; }\n  [data-report=\"doc1\"] .rwd-scroll-note { color:#aebfce; }\n  [data-report=\"doc1\"] #detail { min-width:1100px; }\n  [data-report=\"doc4\"] table.matrix { min-width:1450px; }\n  [data-report=\"doc6\"] .data-table { min-width:640px; }\n  [data-report=\"doc6\"] .store-table { min-width:900px; }\n  [data-report=\"doc0\"] .rwd-detail-inner { min-width:650px; }\n  [data-report=\"doc0\"] .rwd-brand-summary { min-width:560px; }\n}\n@media screen and (max-width:1024px) {\n  *, *::before, *::after { box-sizing:border-box; }\n  .wrap,.container,main,section,.panel,.card,.gp,.chartbox,.cbox,.chart-wrap { min-width:0; }\n  .rwd-table-scroll { overscroll-behavior-x:contain; }\n  [data-report=\"doc0\"] .mkt-row { grid-template-columns:repeat(3,minmax(0,1fr)); }\n  [data-report=\"doc0\"] .dv-lbl { white-space:normal; overflow-wrap:anywhere; letter-spacing:.06em; }\n  [data-report=\"doc0\"] .dv-line { min-width:16px; }\n  [data-report=\"doc1\"] .hero-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }\n  [data-report=\"doc1\"] .hero-cell,[data-report=\"doc1\"] .hcard { min-width:0; }\n  [data-report=\"doc1\"] .grid { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc1\"] .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }\n  [data-report=\"doc2\"] main,[data-report=\"doc5\"] main { max-width:100%; min-width:0; }\n  [data-report=\"doc2\"] nav.tabs,[data-report=\"doc5\"] nav.tabs { max-width:100%; min-width:0; }\n  [data-report=\"doc2\"] nav.tabs button,[data-report=\"doc5\"] nav.tabs button { flex-shrink:0; min-height:44px; }\n  [data-report=\"doc2\"] .sheet-head,[data-report=\"doc5\"] .sheet-head { flex-wrap:wrap; }\n  [data-report=\"doc2\"] .xl-scroll,[data-report=\"doc5\"] .xl-scroll { max-width:100%; min-width:0; }\n  [data-report=\"doc5\"] div[style*=\"grid-template-columns\"] { grid-template-columns:repeat(auto-fit,minmax(min(540px,100%),1fr))!important; }\n  [data-report=\"doc3\"] .strip { grid-template-columns:repeat(3,minmax(0,1fr)); }\n  [data-report=\"doc3\"] .grid1 { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc4\"] header.hero { flex-wrap:wrap; gap:16px; }\n  [data-report=\"doc4\"] .hero-kpis { flex-wrap:wrap; gap:14px 22px; }\n  [data-report=\"doc4\"] .hero-kpi { min-width:0; }\n  [data-report=\"doc4\"] .tab-bar { flex-wrap:wrap; }\n  [data-report=\"doc4\"] .tab-hint { margin-left:0; letter-spacing:0; }\n  [data-report=\"doc4\"] .matrix-block .panel-title { flex-wrap:wrap; }\n  [data-report=\"doc4\"] .matrix-block .panel-title .t { white-space:normal; flex-wrap:wrap; }\n  [data-report=\"doc4\"] .matrix-block .panel-title .tag { max-width:100%; text-align:left; }\n  [data-report=\"doc4\"] .brand-hd { flex-wrap:wrap; gap:12px; }\n  [data-report=\"doc4\"] .panel h3,[data-report=\"doc4\"] .panel .foot { flex-wrap:wrap; gap:6px; }\n  [data-report=\"map\"] .map-wrap { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"map\"] .side { width:100%; min-width:0; }\n  [data-report=\"map\"] .directory-grid { grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); }\n  [data-report=\"map\"] #tooltip { max-width:calc(100vw - 24px); }\n}\n@media screen and (max-width:680px) {\n  [data-report=\"doc0\"] .hdr { padding:20px 78px 18px 16px; }\n  [data-report=\"doc0\"] .hdr-title { font-size:19px; }\n  [data-report=\"doc0\"] .hdr-logo { width:52px; right:14px; }\n  [data-report=\"doc0\"] .dv { padding:16px 14px 10px; }\n  [data-report=\"doc0\"] .mkt-row { padding:0 12px; grid-template-columns:repeat(2,minmax(0,1fr)); }\n  [data-report=\"doc0\"] .ceo-wrap { padding:0 12px; grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc0\"] div[style*=\"grid-template-columns\"] { grid-template-columns:minmax(0,1fr)!important; }\n  [data-report=\"doc0\"] .det-hd { flex-wrap:wrap; }\n  [data-report=\"doc0\"] .det-inf { flex-basis:100%; }\n  [data-report=\"doc0\"] .det-rates { flex-wrap:wrap; gap:8px; }\n  [data-report=\"doc0\"] .spark-ttl,[data-report=\"doc0\"] .al-body { overflow-wrap:anywhere; }\n  [data-report=\"doc0\"] .ftr { flex-wrap:wrap; gap:8px; padding:14px; }\n  [data-report=\"doc0\"] .rwd-lag-grid { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; }\n  [data-report=\"doc1\"] .wrap { padding:18px 12px 36px; }\n  [data-report=\"doc1\"] .hero-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }\n  [data-report=\"doc1\"] .hcard { padding:12px 10px; }\n  [data-report=\"doc1\"] .kpis { gap:10px; }\n  [data-report=\"doc1\"] .card { padding:16px 12px; }\n  [data-report=\"doc1\"] .detail-card>h3 { margin:-16px -12px 0; padding:12px; }\n  [data-report=\"doc1\"] .tabs { gap:4px; }\n  [data-report=\"doc1\"] .tab { min-height:44px; padding:8px 10px; }\n  [data-report=\"doc1\"] .brg-row { flex-direction:column; align-items:stretch; gap:10px; }\n  [data-report=\"doc1\"] .brg-brands { min-width:0; gap:8px; }\n  [data-report=\"doc1\"] .brg-country { text-align:left; }\n  [data-report=\"doc2\"] header.top,[data-report=\"doc5\"] header.top { padding:14px 12px; gap:10px; }\n  [data-report=\"doc2\"] .h-title,[data-report=\"doc5\"] .h-title { font-size:18px; overflow-wrap:anywhere; }\n  [data-report=\"doc2\"] .top-actions,[data-report=\"doc5\"] .top-actions { margin-left:0; flex-wrap:wrap; }\n  [data-report=\"doc2\"] main,[data-report=\"doc5\"] main { padding:16px 12px 32px; }\n  [data-report=\"doc2\"] nav.tabs,[data-report=\"doc5\"] nav.tabs { padding:8px 12px; }\n  [data-report=\"doc5\"] svg[viewBox] { min-width:560px; }\n  [data-report=\"doc3\"] .wrap { padding:0 12px 40px; }\n  [data-report=\"doc3\"] header.mast { padding:26px 0 18px; }\n  [data-report=\"doc3\"] .mast h1 { font-size:26px; }\n  [data-report=\"doc3\"] .strip { grid-template-columns:repeat(2,minmax(0,1fr)); }\n  [data-report=\"doc3\"] .panel { padding:16px 12px; }\n  [data-report=\"doc3\"] section { margin-top:32px; }\n  [data-report=\"doc3\"] .gp h3 { flex-wrap:wrap; }\n  [data-report=\"doc3\"] .tabs button { min-height:44px; }\n  [data-report=\"doc4\"] .container,[data-report=\"doc4\"] .tab-wrap { padding-left:12px; padding-right:12px; }\n  [data-report=\"doc4\"] h1 { font-size:21px; }\n  [data-report=\"doc4\"] .panel { padding:12px 10px; }\n  [data-report=\"doc4\"] .dim-cards { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc4\"] .rec-grid { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc4\"] .rec-card.rec-wide { grid-column:auto; }\n  [data-report=\"doc4\"] .legend,[data-report=\"doc4\"] .quadrant-legend { flex-wrap:wrap; gap:8px; }\n  [data-report=\"doc4\"] .brand-total { flex-wrap:wrap; gap:12px; }\n  [data-report=\"doc4\"] .tab-btn { min-height:44px; }\n  [data-report=\"map\"] body { padding:12px; }\n  [data-report=\"map\"] .container { padding:14px 12px; }\n  [data-report=\"doc6\"] body { padding:18px 12px; }\n  [data-report=\"doc6\"] .section { padding:16px 12px; }\n  [data-report=\"doc6\"] .section-head { flex-wrap:wrap; gap:6px; }\n  [data-report=\"doc6\"] .dual-chart { grid-template-columns:minmax(0,1fr); }\n  [data-report=\"doc6\"] .dual-chart>* { min-width:0; }\n  [data-report=\"doc6\"] h2 { white-space:normal!important; overflow-wrap:anywhere; }\n  [data-report=\"doc6\"] .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }\n  [data-report=\"doc6\"] .store-summary-cards { grid-template-columns:minmax(0,1fr); }\n}\n@media print {\n  .rwd-scroll-note { display:none!important; }\n  .rwd-table-scroll { overflow:visible!important; max-width:none; }\n}\n";
+  function styleDocument(doc, id) {
+    if (!doc || !doc.documentElement || doc.getElementById('report-responsive-style')) return;
+    doc.documentElement.setAttribute('data-report', id);
+    var style = doc.createElement('style');
+    style.id = 'report-responsive-style';
+    style.textContent = css;
+    doc.head.appendChild(style);
+  }
+  function scrollRegion(doc, target) {
+    target.classList.add('rwd-table-scroll');
+    if (!target.hasAttribute('tabindex')) target.tabIndex = 0;
+    if (!target.hasAttribute('role')) target.setAttribute('role', 'region');
+    if (!target.hasAttribute('aria-label')) target.setAttribute('aria-label', '報表表格，可左右滑動查看完整欄位');
+    if (!target.previousElementSibling || !target.previousElementSibling.classList.contains('rwd-scroll-note')) {
+      var note = doc.createElement('p');
+      note.className = 'rwd-scroll-note';
+      note.textContent = '← 左右滑動查看完整欄位 →';
+      target.parentNode.insertBefore(note, target);
+    }
+  }
+  function enhance(doc, id) {
+    if (!doc || !doc.body || doc.__responsiveReady) return;
+    if (doc.readyState === 'loading') {
+      doc.addEventListener('DOMContentLoaded', function () { enhance(doc, id); }, { once:true });
+      return;
+    }
+    doc.__responsiveReady = true;
+    styleDocument(doc, id);
+    // The daily report uses aligned div rows rather than HTML tables.
+    if (id === 'doc0') {
+      Array.from(doc.querySelectorAll('.det-col')).forEach(function (head) {
+        var parent = head.parentElement;
+        if (parent.classList.contains('rwd-detail-inner')) return;
+        var inner = doc.createElement('div');
+        inner.className = 'rwd-detail-inner';
+        while (parent.firstChild) inner.appendChild(parent.firstChild);
+        parent.appendChild(inner);
+        scrollRegion(doc, parent);
+      });
+      var summary = doc.querySelector('.bb-hdr');
+      if (summary) {
+        summary.parentElement.classList.add('rwd-brand-summary');
+        var outer = doc.createElement('div');
+        summary.parentElement.parentNode.insertBefore(outer, summary.parentElement);
+        outer.appendChild(summary.parentElement);
+        scrollRegion(doc, outer);
+      }
+      Array.from(doc.querySelectorAll('.lag-jump,.lag-nojump')).forEach(function (el) {
+        el.parentElement.classList.add('rwd-lag-grid');
+      });
+    }
+    function update() {
+      Array.from(doc.querySelectorAll('table')).forEach(function (table) {
+        var region = table.closest('.rwd-table-scroll,.xl-scroll,.tablewrap,.ovtablewrap,.scroll');
+        if (!region) {
+          region = doc.createElement('div');
+          table.parentNode.insertBefore(region, table);
+          region.appendChild(table);
+        }
+        scrollRegion(doc, region);
+      });
+      Array.from(doc.querySelectorAll('.rwd-table-scroll')).forEach(function (region) {
+        var note = region.previousElementSibling;
+        if (note && note.classList.contains('rwd-scroll-note')) {
+          note.classList.toggle('is-wide', region.scrollWidth > region.clientWidth + 2);
+        }
+      });
+    }
+    update();
+    var queued = false;
+    var observer = new doc.defaultView.MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      doc.defaultView.requestAnimationFrame(function () { queued = false; update(); });
+    });
+    observer.observe(doc.body, { childList:true, subtree:true });
+    doc.defaultView.addEventListener('resize', update);
+    Array.from(doc.querySelectorAll('iframe[srcdoc]')).forEach(function (frame) {
+      function nested() {
+        try { enhance(frame.contentDocument, 'map'); } catch (e) { /* Keep externally hosted frames untouched. */ }
+      }
+      frame.addEventListener('load', nested);
+      nested();
+    });
+  }
+  window.ReportResponsive = {
+    prepare: function (html, id) {
+      html = html.replace(/<html\b/i, '<html data-report="' + id + '"');
+      return html.replace(/<\/head>/i, '<style id="report-responsive-style">' + css + '</style></head>');
+    },
+    enhance: enhance
+  };
+})();
+
+</script>
+<script>
 // 點卡片 -> 把內嵌的報表原文寫進 iframe。全程不碰 fetch／外部檔案，
 // 所以 file:// 直接雙擊開啟也能用（這正是原本 .dc.html 做不到的地方）。
 //
@@ -6715,6 +6860,12 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
     };
     [120, 600, 1500, 3000].forEach(function (t) { setTimeout(fit, t); });
     window.addEventListener('resize', fit);
+    var observer = window.ResizeObserver ? new ResizeObserver(fit) : null;
+    if (observer && frame.contentDocument && frame.contentDocument.body) observer.observe(frame.contentDocument.body);
+    frame._disposeFit = function () {
+      window.removeEventListener('resize', fit);
+      if (observer) observer.disconnect();
+    };
   }
 
   function resetBar() {
@@ -6725,6 +6876,8 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
   function clearSlot() {
     if (pdfTimer) { clearTimeout(pdfTimer); pdfTimer = null; }
     slot.classList.remove('ios-scroll');
+    var oldFrame = slot.querySelector('iframe');
+    if (oldFrame && oldFrame._disposeFit) oldFrame._disposeFit();
     slot.innerHTML = '';                 // 連 iframe 一起丟掉，全域才會乾淨
   }
 
@@ -6765,6 +6918,7 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
     // 有機會把剛寫進去的內容洗掉（多數時候正常、偶爾空白，最難查的那種）。
     // 對策是「驗證沒內容就重寫一次」——第二次寫時 about:blank 早就結束了。
     var html = node.textContent.split(SENT).join('</scr' + 'ipt');
+    html = ReportResponsive.prepare(html, node.id);
     var attempts = 0;
     var settled = false;
 
@@ -6774,6 +6928,7 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
       d.open();
       d.write(html);
       d.close();
+      ReportResponsive.enhance(d, node.id);
     }
 
     function isEmpty() {
@@ -6796,6 +6951,7 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
     }
 
     function check() {
+      if (!frame.isConnected) return;
       if (settled) { showErrs(); return; }        // 第二輪只補抓非同步錯誤
       if (isEmpty()) {
         if (attempts < 3) { write(); setTimeout(check, 350); return; }
@@ -6874,6 +7030,7 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
     try {
       var node = document.getElementById(id);
       viewer.hidden = false;
+      document.body.classList.add('report-open');
       if (!node) {
         vtitle.textContent = '';
         showFail('找不到這份報表的內容',
@@ -6893,6 +7050,7 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
 
   function closeReport() {
     viewer.hidden = true;
+    document.body.classList.remove('report-open');
     clearSlot();
     resetBar();
     currentId = null;
