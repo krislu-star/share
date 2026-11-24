@@ -254,6 +254,18 @@ footer{font-size:14px;color:var(--muted);line-height:1.75;padding-top:6px}
   .vfail p{font-size:15px}
 }
 
+/* 搜尋結果提示列：搜尋時收起「最近更新」與操作提示，讓結果緊接在搜尋框下方 */
+body.searching main > .panel,body.searching .guide{display:none}
+.qstat{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 4px;padding:14px 18px;
+  background:#FDEEE8;border:2px solid #E85428;border-radius:14px;font-size:17px;font-weight:700;color:#1F1A17;scroll-margin-top:12px}
+.qstat[hidden]{display:none}
+.qstat.none{background:#fff;border-style:dashed;border-color:#A8300E;color:#A8300E}
+.qclear{font:inherit;font-size:16px;font-weight:700;color:#fff;background:#CF3F16;border:0;border-radius:999px;padding:9px 18px;cursor:pointer;flex:none}
+.qclear:hover{background:#A8300E}
+@media (max-width:680px){.qstat{font-size:16px;padding:12px 14px;margin-top:12px}.qclear{font-size:15px;padding:9px 14px}}
+/* 手機單欄時，搜尋中沒有結果的那一欄整個收起，結果才不會被推到畫面外 */
+@media (max-width:680px){body.searching .col.qnone{display:none}}
+
 </style>
 </head>
 <body>
@@ -7695,23 +7707,82 @@ document.getElementById('directoryGrid').addEventListener('click', (e) => {
     mark.setAttribute('role', 'img');
     mark.setAttribute('aria-label', '爭鮮餐飲');
   }
-  var intro = document.querySelector('main .intro');
-  if (intro && !document.querySelector('.guide')) {
-    var g = document.createElement('div');
-    g.className = 'guide';
-    g.setAttribute('aria-label', '使用方式');
-    [['1', '用<b>搜尋</b>或<b>分類</b>找到報表'],
-     ['2', '點卡片上的<b>「開啟報表」</b>'],
-     ['3', '看完按左上角<b>「返回總覽」</b>']].forEach(function (s) {
-      var d = document.createElement('div');
-      d.className = 'g';
-      d.innerHTML = '<span class="gn">' + s[0] + '</span><span>' + s[1] + '</span>';
-      g.appendChild(d);
-    });
-    intro.parentNode.insertBefore(g, intro.nextSibling);
-  }
+  // 三步驟操作提示已依使用者回饋拿掉（2026-11-24：佔版面、擋住內容）
   var q = document.getElementById('q');
-  if (q) { q.placeholder = '搜尋報表，例如：損益、泰國'; q.setAttribute('aria-label', '搜尋報表'); }
+  if (q) { q.placeholder = '輸入關鍵字，例如：泰國'; q.setAttribute('aria-label', '搜尋報表'); }
+})();
+
+// 搜尋強化（新版面）：原本的搜尋只會篩下方卡片，中間隔著「最近更新」與操作提示，
+// 使用者打字後畫面看起來沒變，會以為搜尋壞了。這裡補上：
+// ① 搜尋時收起「最近更新」與操作提示，結果直接出現在搜尋框下方
+// ② 搜尋框下方顯示「找到 N 份」與清除按鈕
+// ③ 支援多個關鍵字（空白、頓號、逗號分隔，需全部符合），臺/台 視為相同
+// ④ 按 Enter 收起鍵盤並捲到結果
+(function () {
+  var q = document.getElementById('q');
+  var intro = document.querySelector('main .intro');
+  var empty = document.getElementById('empty');
+  if (!q || !intro || !empty) return;
+  var all = function (sel) { return [].slice.call(document.querySelectorAll(sel)); };
+  var cards = all('.card'), secs = all('#secs section'), cols = all('#secs .col'), chips = all('#chips .chip');
+  var stat = document.createElement('div');
+  stat.className = 'qstat'; stat.hidden = true; stat.setAttribute('aria-live', 'polite');
+  var msg = document.createElement('span'); msg.className = 'qmsg';
+  var clr = document.createElement('button'); clr.type = 'button'; clr.className = 'qclear'; clr.textContent = '✕ 清除搜尋';
+  stat.appendChild(msg); stat.appendChild(clr);
+  intro.parentNode.insertBefore(stat, intro.nextSibling);
+  var norm = function (t) { return (t || '').toLowerCase().replace(/臺/g, '台'); };
+  function count(el, vis, attr) {
+    if (el) el.textContent = vis + ' 項' + (vis < +el.getAttribute(attr) ? '（篩選中）' : '');
+  }
+  function refine() {
+    var terms = norm(q.value).split(/[\s、，,;；\/]+/).filter(Boolean);
+    var on = document.querySelector('#chips .chip.on');
+    var cat = on ? on.getAttribute('data-cat') : 'all';
+    var shown = 0;
+    cards.forEach(function (el) {
+      var okCat = cat === 'all' ? true
+        : cat === 'recent' ? el.getAttribute('data-recent') === '1'
+        : el.getAttribute('data-cat') === cat;
+      var text = norm(el.getAttribute('data-text'));
+      var ok = okCat && terms.every(function (t) { return text.indexOf(t) >= 0; });
+      el.hidden = !ok;
+      if (ok) shown++;
+    });
+    secs.forEach(function (s) {
+      var vis = s.querySelectorAll('.card:not([hidden])').length;
+      s.hidden = vis === 0;
+      count(s.querySelector('.sec-count'), vis, 'data-total');
+    });
+    cols.forEach(function (c) {
+      var vis = c.querySelectorAll('.card:not([hidden])').length;
+      count(c.querySelector('.col-count'), vis, 'data-total');
+      var ce = c.querySelector('.col-empty'); if (ce) ce.hidden = vis > 0;
+      c.classList.toggle('qnone', vis === 0);
+    });
+    empty.hidden = shown > 0;
+    var searching = terms.length > 0;
+    document.body.classList.toggle('searching', searching);
+    stat.hidden = !searching;
+    stat.classList.toggle('none', searching && shown === 0);
+    if (searching) {
+      var catName = (cat !== 'all' && on) ? '（只在「' + on.textContent.replace(/\d+\s*$/, '').trim() + '」分類內）' : '';
+      msg.textContent = shown
+        ? '找到 ' + shown + ' 份符合「' + q.value.trim() + '」的報表' + catName + '，請看下方'
+        : '找不到符合「' + q.value.trim() + '」的報表' + catName + '，請換個關鍵字';
+    }
+  }
+  q.addEventListener('input', refine);
+  q.addEventListener('search', refine);
+  chips.forEach(function (b) { b.addEventListener('click', refine); });
+  q.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229) return;
+    e.preventDefault(); refine(); q.blur();
+    if (!stat.hidden && stat.scrollIntoView) stat.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
+  clr.addEventListener('click', function () { q.value = ''; refine(); q.focus(); });
+  q.setAttribute('enterkeyhint', 'search');
+  refine();
 })();
 
 </script>
